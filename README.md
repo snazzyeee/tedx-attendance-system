@@ -595,3 +595,11 @@ Watch the dev-server log during a save: it prints one line reporting the number
 of Sheets calls the save actually made — **three** (read, write, audit append),
 or two where the `Audit Log` tab is absent, whatever the member count. If that
 number grows with the roster, something has regressed.
+
+---
+
+## License
+
+[MIT](LICENSE). The code is free to reuse; the TEDx and TEDxDYPDPU names and
+marks are not covered by it and remain subject to TED's own trademark and event
+licensing rules.
