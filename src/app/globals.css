@@ -1,0 +1,351 @@
+/*
+ * TEDxDYPDPU design tokens.
+ *
+ * One dark theme, committed to deliberately: this is used on phones, in a hall,
+ * during a one-hour window. Two themes would be two sets of contrast bugs.
+ *
+ * Every colour below is a token. The previous stylesheet mixed tokens with
+ * light-theme leftovers (#e0e0e0 card borders, #ececec bars, `green` success
+ * text) that had survived a half-finished migration to dark — invisible or
+ * glaring depending on which one, and unfixable in one place. Nothing outside
+ * this block hard-codes a colour.
+ */
+:root {
+  /* --- Brand ------------------------------------------------------------ */
+  /* TEDx red. Accents, borders, bars. */
+  --tedx-red: #e62b1e;
+  /* Deepened for filled buttons: white on this clears 5.2:1, where white on
+     --tedx-red sits at 4.4:1 and misses AA for body text. */
+  --tedx-red-deep: #d4211a;
+  --tedx-red-hover: #f0392c;
+  /* Lifted for red *text* on a dark surface (5.5:1). */
+  --tedx-red-text: #ff4436;
+  --tedx-red-soft: rgba(230, 43, 30, 0.14);
+
+  /* --- Surfaces --------------------------------------------------------- */
+  --bg-body: #0a0a0b;
+  --bg-surface: #141416;
+  --bg-elevated: #1c1c20;
+  --bg-inset: #232329;
+  --bg-hover: #2a2a31;
+
+  /* --- Lines ------------------------------------------------------------ */
+  --border-color: #2a2a31;
+  --border-strong: #3a3a44;
+
+  /* --- Text ------------------------------------------------------------- */
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --btn-text: #ffffff;
+
+  /* --- Semantic (all >= 5:1 on --bg-surface) ---------------------------- */
+  --success: #4ade80;
+  --success-soft: rgba(74, 222, 128, 0.12);
+  --success-line: rgba(74, 222, 128, 0.35);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.12);
+  --danger-line: rgba(248, 113, 113, 0.35);
+  --info: #60a5fa;
+  --info-soft: rgba(96, 165, 250, 0.12);
+  --info-line: rgba(96, 165, 250, 0.35);
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.12);
+  --warning-line: rgba(251, 191, 36, 0.35);
+
+  /* --- Shape and depth -------------------------------------------------- */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+
+  /* --- Type ------------------------------------------------------------- */
+  /* No webfont on purpose: this has to paint instantly on campus wifi, and the
+     previous stylesheet named a font it never loaded — every device was already
+     falling back to this stack. */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  /* iOS Safari otherwise inflates text in landscape and breaks the grid. */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: var(--bg-body);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  /* The toggles are tap targets; suppress the grey flash on touch. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* One visible focus ring on every interactive element, so a keyboard user is
+   never guessing. `:focus-visible` keeps it off mouse clicks. */
+:focus-visible {
+  outline: 2px solid var(--tedx-red-text);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: var(--tedx-red-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Layout
+ * ------------------------------------------------------------------------ */
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+  min-height: 100dvh;
+  background-color: var(--bg-body);
+}
+
+/* Analytics carries a long roster and a date history; give it room on a laptop
+   without widening the attendance list, which is a phone screen's job. */
+.container-wide {
+  max-width: 940px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Controls
+ * ------------------------------------------------------------------------ */
+
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    transform 0.08s ease, opacity 0.15s ease;
+}
+
+.btn-primary {
+  background-color: var(--tedx-red-deep);
+  color: var(--btn-text);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--tedx-red-hover);
+}
+
+.btn-secondary {
+  background-color: var(--bg-inset);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--bg-hover);
+}
+
+.btn-danger {
+  background-color: transparent;
+  color: var(--danger);
+  border-color: var(--danger-line);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: var(--danger-soft);
+}
+
+.btn-primary:active:not(:disabled),
+.btn-secondary:active:not(:disabled),
+.btn-danger:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-danger:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-compact {
+  width: auto;
+  min-height: 40px;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.875rem;
+}
+
+/* ---------------------------------------------------------------------------
+ * Form fields
+ * ------------------------------------------------------------------------ */
+
+.input-field,
+.select-field {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  /* 16px keeps iOS Safari from zooming the viewport on focus. */
+  font-size: 1rem;
+  font-family: inherit;
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-field::placeholder {
+  color: var(--text-muted);
+}
+
+.input-field:hover:not(:disabled),
+.select-field:hover:not(:disabled) {
+  border-color: var(--text-muted);
+}
+
+.input-field:focus,
+.select-field:focus {
+  border-color: var(--tedx-red);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--tedx-red-soft);
+}
+
+.select-field {
+  /* The native arrow renders near-black on a dark field in several browsers. */
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-secondary) 50%),
+    linear-gradient(135deg, var(--text-secondary) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+.select-field:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.field {
+  margin-bottom: 1.125rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper .input-field {
+  padding-right: 4.25rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.5rem 0.625rem;
+}
+
+.password-toggle:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+/* ---------------------------------------------------------------------------
+ * Messages
+ * ------------------------------------------------------------------------ */
+
+.error-text,
+.success-text {
+  display: block;
+  padding: 0.75rem 0.875rem;
+  border-radius: var(--radius);
+  border: 1px solid;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  /* Sheets errors can be long and unbroken; never let one blow out the layout. */
+  overflow-wrap: anywhere;
+}
+
+.error-text {
+  color: var(--danger);
+  background: var(--danger-soft);
+  border-color: var(--danger-line);
+}
+
+/* `green` on a near-black surface was ~2.4:1 — effectively unreadable. */
+.success-text {
+  color: var(--success);
+  background: var(--success-soft);
+  border-color: var(--success-line);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

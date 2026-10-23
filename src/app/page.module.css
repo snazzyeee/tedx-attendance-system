@@ -1,0 +1,33 @@
+.pageHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0;
+}
+
+/* Shared by the pages that render content directly under the heading. */
+.body {
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 480px) {
+  .pageHead > :global(select) {
+    width: 100%;
+  }
+}

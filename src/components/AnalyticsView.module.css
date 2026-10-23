@@ -1,0 +1,264 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* ---------------------------------------------------------------------------
+ * Summary cards
+ * ------------------------------------------------------------------------ */
+
+/* Two columns at 360px, four once there is room — four wide cards read as a
+   list, four small ones read as a dashboard. */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 0.9rem 1rem;
+  /* Was a hard-coded #e0e0e0 — a light-theme border glowing on a dark page. */
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background-color: var(--bg-surface);
+}
+
+.cardLabel {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cardValue {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.present {
+  color: var(--success);
+}
+
+.absent {
+  color: var(--text-secondary);
+}
+
+.accent {
+  color: var(--tedx-red-text);
+}
+
+.note {
+  margin: 0;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--warning-line);
+  border-left-width: 3px;
+  border-radius: var(--radius);
+  background-color: var(--warning-soft);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------------------
+ * Sections
+ * ------------------------------------------------------------------------ */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.625rem;
+}
+
+.sectionTitle {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.sectionMeta {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.empty {
+  margin: 0;
+  padding: 1.25rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.memberList,
+.dateList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+/* ---------------------------------------------------------------------------
+ * Member-wise bars
+ * ------------------------------------------------------------------------ */
+
+.memberRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.memberTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.memberName {
+  font-size: 0.9375rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.role {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-inset);
+  color: var(--text-secondary);
+  font-size: 0.6563rem;
+  font-weight: 700;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.memberValue {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.memberCount {
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.bar {
+  height: 8px;
+  border-radius: var(--radius-pill);
+  /* Was #ececec. */
+  background-color: var(--bg-inset);
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background-color: var(--tedx-red);
+  transition: width 0.4s ease;
+}
+
+/* A member below half attendance is the thing a TE is scanning for. */
+.barLow {
+  background-color: var(--warning);
+}
+
+/* ---------------------------------------------------------------------------
+ * Date-wise trend
+ * ------------------------------------------------------------------------ */
+
+.dateRow {
+  display: grid;
+  grid-template-columns: 5.75rem 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.dateToday .dateLabel {
+  font-weight: 700;
+  color: var(--tedx-red-text);
+}
+
+.dateLabel {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.stackedBar {
+  display: flex;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background-color: var(--bg-inset);
+}
+
+.stackPresent {
+  background-color: var(--tedx-red);
+}
+
+/* Was #d8d8d8 — near-white, so every bar looked full on a dark page. */
+.stackAbsent {
+  background-color: var(--bg-inset);
+}
+
+.dateValue {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  white-space: nowrap;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.datePercent {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+@media (max-width: 420px) {
+  .dateRow {
+    grid-template-columns: 5rem 1fr;
+    row-gap: 0.3rem;
+  }
+
+  .dateValue {
+    grid-column: 2;
+    justify-content: flex-end;
+  }
+}

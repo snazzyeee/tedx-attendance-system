@@ -1,0 +1,103 @@
+/*
+ * Blocky TEDx toggle switch.
+ *
+ * Deliberately square — no border radius anywhere — to echo the TEDx wordmark.
+ * The two hard-coded colours it shipped with (#999 thumb, #121212 glyph) are
+ * now tokens, so the switch tracks the palette like everything else.
+ */
+.toggleWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
+  /* 44px minimum tap target so the control stays usable on a phone (spec §9). */
+  min-height: 44px;
+}
+
+.toggleWrapper:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Ring the track, not the invisible button box around it. */
+.toggleWrapper:focus-visible {
+  outline: none;
+}
+
+.toggleWrapper:focus-visible .toggleTrack {
+  outline: 2px solid var(--tedx-red-text);
+  outline-offset: 3px;
+}
+
+.toggleTrack {
+  position: relative;
+  display: block;
+  width: 56px;
+  height: 28px;
+  background-color: var(--bg-inset);
+  border: 1px solid var(--border-strong);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.toggleWrapper:hover:not(:disabled) .toggleTrack {
+  border-color: var(--text-muted);
+}
+
+.present .toggleTrack {
+  background-color: var(--tedx-red);
+  border-color: var(--tedx-red);
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background-color: var(--text-muted);
+  color: var(--bg-body);
+  font-family: inherit;
+  font-weight: 900;
+  font-size: 12px;
+  line-height: 1;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.2s ease, color 0.2s ease;
+}
+
+.present .toggleThumb {
+  transform: translateX(28px);
+  background-color: var(--btn-text);
+  color: var(--tedx-red);
+}
+
+.toggleLabel {
+  margin-left: 10px;
+  width: 70px;
+  text-align: left;
+  font-weight: 800;
+  font-size: 0.8125rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.present .toggleLabel {
+  color: var(--text-primary);
+}
+
+/* At 360px a long name plus the full switch is tight; drop the word and let
+   the switch itself carry the state. The accessible name is on the button. */
+@media (max-width: 380px) {
+  .toggleLabel {
+    width: auto;
+    margin-left: 8px;
+    font-size: 0.75rem;
+  }
+}

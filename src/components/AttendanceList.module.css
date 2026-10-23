@@ -1,0 +1,205 @@
+.container {
+  margin-top: 1.25rem;
+}
+
+/* ---------------------------------------------------------------------------
+ * Running total
+ * ------------------------------------------------------------------------ */
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1rem;
+  margin-bottom: 0.75rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+}
+
+.summaryCount {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.summaryCount strong {
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.summaryTotal {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.summaryBar {
+  flex: 1;
+  height: 6px;
+  min-width: 40px;
+  border-radius: var(--radius-pill);
+  /* Was #ececec: a light-theme leftover that glowed on a near-black page. */
+  background: var(--bg-inset);
+  overflow: hidden;
+}
+
+.summaryFill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--tedx-red);
+  transition: width 0.3s ease;
+}
+
+.saveIndicator {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.save_saving {
+  color: var(--text-secondary);
+}
+
+.save_saved {
+  color: var(--success);
+}
+
+.save_failed {
+  color: var(--danger);
+}
+
+/* ---------------------------------------------------------------------------
+ * Roster
+ * ------------------------------------------------------------------------ */
+
+.list {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.625rem 0.875rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.row:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-elevated);
+}
+
+.memberName {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  /* Long names wrap instead of pushing the toggle off a 360px screen. */
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.role {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-inset);
+  color: var(--text-secondary);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.footer:empty {
+  display: none;
+}
+
+/* Something worth knowing that is not a failure — a missing Audit Log tab, say.
+   Dressing that as an error sends a TE back to re-tap a correct roster. */
+.notice {
+  margin: 0;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+
+.statusText {
+  color: var(--text-secondary);
+  margin: 0 0 1rem;
+}
+
+.statusText code {
+  padding: 0.1rem 0.3rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-inset);
+  font-size: 0.875em;
+}
+
+/* ---------------------------------------------------------------------------
+ * Loading placeholders, sized like real rows so the layout does not jump
+ * ------------------------------------------------------------------------ */
+
+.skeletonRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.625rem 0.875rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+}
+
+.skeletonName,
+.skeletonToggle {
+  display: block;
+  height: 1.25rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--bg-inset) 25%,
+    var(--bg-hover) 50%,
+    var(--bg-inset) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeletonName {
+  width: 55%;
+}
+
+/* Matches the real switch's footprint: 56px track + 10px gap + 70px label. */
+.skeletonToggle {
+  width: 136px;
+  height: 28px;
+  border-radius: 0;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}

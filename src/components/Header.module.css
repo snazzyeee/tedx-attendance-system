@@ -1,0 +1,98 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  margin: 0 -1rem 1.5rem;
+  padding: 0 1rem;
+  /* Opaque enough that scrolled content cannot ghost through it. An earlier
+     0.85 relied on the blur to hide what passed underneath, which left member
+     rows faintly legible over the wordmark wherever backdrop-filter is off. */
+  background-color: rgba(10, 10, 11, 0.96);
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+  border-bottom: 1px solid var(--border-color);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .header {
+    background-color: var(--bg-body);
+  }
+}
+
+/* The TEDx red rule that used to be the whole header border, kept as a hairline
+   accent so the brand reads without shouting over the content. */
+.header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--tedx-red) 0%,
+    var(--tedx-red) 22%,
+    transparent 65%
+  );
+}
+
+/* No max-width of its own: the header sits inside `.container` and bleeds to
+   its edges, so it stays aligned with the content on both the 720px attendance
+   page and the 940px analytics page. */
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 60px;
+}
+
+.logo {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.tedx {
+  color: var(--tedx-red-text);
+}
+
+.dypdpu {
+  color: var(--text-primary);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+  min-width: 0;
+}
+
+.date {
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.domain {
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--tedx-red-soft);
+  border: 1px solid var(--tedx-red-soft);
+  color: var(--tedx-red-text);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Below ~380px the date and the domain pill together crowd out the menu. The
+   date is already repeated under the page title, so it is the one that goes. */
+@media (max-width: 400px) {
+  .date {
+    display: none;
+  }
+}
