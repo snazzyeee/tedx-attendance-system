@@ -5,11 +5,11 @@ Sheets as the database.
 
 The whole system is built around two rules:
 
-> **Every TE can manage attendance — but only for their own domain,**
+> **Every TE can manage attendance, but only for their own domain,**
 > **and only between 3 PM and 4 PM IST.**
 
 Both are enforced in the backend, on the session's identity and the *server's*
-clock — never as a UI restriction. A Curation TE who forges a request naming a
+clock, rather than solely through UI restrictions. A Curation TE who forges a request naming a
 Marketing member gets a `403` and the sheet is not touched; so does one who tries
 to file marks under yesterday's date, or to save at 9 PM. Core Members are exempt
 from the clock and can open a 15-minute override for everyone else.
@@ -21,10 +21,10 @@ from the clock and can open a 15-minute override for everyone else.
 This is the public copy of the project: the committee's own code, shipping a
 **placeholder roster** in `src/config/members.ts` and `CHANGE_ME_*` bootstrap
 passwords in `src/config/auth.ts` in place of the deployed values. Put your own
-in and it runs — §7 and §8 cover both.
+in and it runs. Sections 7 and 8 cover both.
 
 This file is the manual: install, configure, deploy, and how each rule is
-enforced. Two companion documents cover the rest — [ABOUT.md](ABOUT.md) for what
+enforced. Two companion documents cover the rest: [ABOUT.md](ABOUT.md) for what
 problem this solves and why it is built this way, and
 [handover.md](handover.md) for the engineering log: judgement calls, what the
 review pass found, and what to pick up next.
@@ -35,7 +35,7 @@ review pass found, and what to pick up next.
 
 Requires **Node 20.9+** (Next 16's own floor). **Node 23.6+** additionally lets
 `npm test` run the TypeScript test files directly, with no build step and no test
-dependency — on an older Node the app still builds and runs, but the test command
+dependency. On an older Node the app still builds and runs, but the test command
 will not.
 
 ```bash
@@ -61,7 +61,7 @@ Available scripts:
 | `npm start` | Serve the production build |
 | `npm run lint` | ESLint (`eslint-config-next`) |
 | `npm run typecheck` | `tsc --noEmit` |
-| `npm test` | Offline unit tests — no credentials, no network |
+| `npm test` | Offline unit tests without credentials or network access |
 
 ## 2. Environment variables
 
@@ -89,13 +89,13 @@ clearly-labelled insecure constant so a fresh clone runs without setup.
 A missing `GOOGLE_*` variable produces a clear `503` with an actionable message
 rather than an opaque crash.
 
-Never commit `.env.local` — it is already in `.gitignore`.
+Never commit `.env.local`; it is already in `.gitignore`.
 
 ## 3. Google Cloud setup
 
 1. Open the [Google Cloud Console](https://console.cloud.google.com/).
 2. Create a project (e.g. *TEDx Attendance*).
-3. Note the project name — you will create the service account inside it.
+3. Note the project name. You will create the service account inside it.
 
 No billing account is needed; the Sheets API free quota is far above this app's
 usage (see §12).
@@ -111,7 +111,7 @@ screens, or any interactive Google sign-in.
 ## 5. Service account / permissions
 
 1. **APIs & Services → Credentials → Create credentials → Service account**.
-2. Name it (e.g. `sheets-editor`). No project roles are needed — access is granted
+2. Name it (e.g. `sheets-editor`). No project roles are needed; access is granted
    per-sheet in step 5.
 3. Open the service account → **Keys → Add key → Create new key → JSON**, and
    download it.
@@ -127,7 +127,7 @@ Keep the JSON key out of the repository. Treat it as a password.
 ## 6. Sheet format
 
 The app uses two worksheets in the spreadsheet named by `GOOGLE_SHEET_ID`.
-**Create both tabs manually before first use** — the Sheets values API can write
+**Create both tabs manually before first use.** The Sheets values API can write
 *into* a tab but cannot create one, so a missing tab is reported as a
 configuration error rather than silently fixed.
 
@@ -145,7 +145,7 @@ configuration error rather than silently fixed.
   configured in `src/config/members.ts`, the first time attendance is saved into
   an empty sheet.
 - A new date column is appended automatically on the first save of a new day, and
-  reused for every later save that day — never duplicated.
+  reused for every later save that day without duplication.
 - Only the exact text `Present` counts as present (casing and surrounding spaces
   are tolerated). Empty, missing, or unrecognised cells read as `Absent`, so a
   brand-new column shows everyone absent rather than blank.
@@ -168,7 +168,7 @@ configuration error rather than silently fixed.
   hash. Leave it alone unless you want to force the window shut, which you can
   also do from the dashboard.
 
-**`Audit Log`** — optional.
+**`Audit Log`** is optional.
 
 | | A | B | C | D | E |
 |---|---|---|---|---|---|
@@ -183,11 +183,11 @@ You may add extra tabs of your own; the app reads only these three.
 
 ## 7. How to configure TE/SE members
 
-The roster shipped here is a sample — `Curation TE 1`, `Marketing SE 2` and so
-on — with the same shape as the committee's real one, so the app, the tests and
+The roster shipped here is a sample (`Curation TE 1`, `Marketing SE 2` and so
+on) with the same shape as the committee's real one, so the app, the tests and
 analytics all behave as they do in production.
 
-Edit **`src/config/members.ts`** — the single source of truth for who exists. The
+Edit **`src/config/members.ts`**, the single source of truth for who exists. The
 login dropdown, attendance list, analytics, and the backend authorization check
 all read from it. Nothing reads member names out of the sheet, and no component
 hardcodes them.
@@ -205,7 +205,7 @@ Rules, all documented in the file itself:
 
 - **At least one `role: "TE"` per domain.** Only TEs and Core Members can log in,
   so a domain with no TE has no way in. Several TEs per domain is fine and is
-  what the committee's own roster does — but see the caveat below.
+  what the committee's own roster does, but see the caveat below.
 - **`domain` must be one of the values in `src/config/domains.ts`**, or `Core`.
   The `Domain` type turns a typo into a compile error rather than a member who
   never appears.
@@ -215,7 +215,7 @@ Rules, all documented in the file itself:
   other domains and have no attendance of their own to mark, so `Core` never
   appears in a domain picker and cannot be written to.
 
-> **Caveat — a shared bootstrap password.** `INITIAL_PASSWORDS` is keyed by
+> **Caveat: a shared bootstrap password.** `INITIAL_PASSWORDS` is keyed by
 > *domain*, not by person, so every TE in a domain starts with the same password
 > and any of them can sign in as any other until each sets their own at
 > `/change-password`. With one TE per domain that was invisible; with six, it is
@@ -232,7 +232,7 @@ export const INITIAL_PASSWORDS: Record<Domain, string> = {
 };
 ```
 
-One bootstrap password per domain — shared by every TE in that domain, which is
+Every TE in a domain shares one bootstrap password, which is
 why each of them should set their own on day one. They are plaintext by design:
 first-login credentials, not stored secrets. As soon as a TE changes their
 password at `/change-password`, a bcrypt hash is written to the `Passwords`
@@ -241,11 +241,11 @@ working for them.
 
 **Change these from the defaults before deploying**, and ask every TE to set
 their own password on day one. Editing a value here does not revoke a password
-already changed in the sheet — delete that row to reset someone.
+already changed in the sheet. Delete that row to reset someone.
 
 This repository is public, so whatever sits in `auth.ts` is readable by anyone:
 treat the committed values as a template, not as credentials, and pick your own
-before the first deploy. Nothing that is actually a secret belongs in this file —
+before the first deploy. Nothing that is actually a secret belongs in this file;
 the Google service-account key and `SESSION_SECRET` are environment variables
 (§2) and are not tracked.
 
@@ -268,8 +268,8 @@ the Google service-account key and `SESSION_SECRET` are environment variables
    `SameSite=Lax`, `Secure`-in-production** cookie named `session`, carrying only
    `{ username, domain, role }`.
 
-Every credential failure returns the same message — *"Invalid name or
-password."* — with `401`, and the attempt that trips the rate limiter returns
+Every credential failure returns `401` with the same message: *"Invalid name or
+password."* The attempt that trips the rate limiter returns
 `429` on both paths alike, so no response can be used to tell a real name from
 an unknown one.
 
@@ -281,8 +281,8 @@ genuinely absent `Passwords` tab is treated as "no overrides yet".
 **Session checks.** `src/proxy.ts` (Next 16's replacement for `middleware.ts`) is
 an *optimistic* gate: it redirects cookie-less browsers to `/login` and answers
 `401` for API calls, and clears a tampered or expired cookie so the user is not
-stuck in a redirect loop. It is deliberately **not** the authorization layer —
-every route handler and page re-reads the session with `getSession()` and
+stuck in a redirect loop. It is deliberately **not** the authorization layer.
+Every route handler and page re-reads the session with `getSession()` and
 re-checks the domain itself, per the Next.js proxy documentation.
 
 **Logout** (`POST /api/auth/logout`) clears the cookie. Changing a password also
@@ -300,7 +300,7 @@ clears it, since the old session was issued against the old credential.
    > **`SESSION_SECRET` is required at build time, not just at runtime.**
    > `src/lib/auth/session.ts` throws on import if it is missing in production,
    > so the *build* fails rather than deploying an app that signs sessions with a
-   > public fallback secret — which would let anyone forge a cookie for any
+   > public fallback secret, which would let anyone forge a cookie for any
    > domain. If a Vercel build dies with *"SESSION_SECRET must be set in
    > production"*, that is this check doing its job. Generate one with
    > `openssl rand -base64 32`.
@@ -326,12 +326,12 @@ someone access.
   first time their attendance is saved. Until then they still appear in the UI, as
   `Absent`.
 - **Removing** a member: they disappear from the UI and from analytics. Their
-  historical row is left in the sheet untouched — delete it manually if you want
+  historical row is left in the sheet untouched. Delete it manually if you want
   it gone.
 - **Renaming** a member: rows are matched on name, so a rename leaves the old row
   behind and appends a new one. To keep the history, edit column A of the
   `Attendance` worksheet to the new name in the same commit.
-- A member who exists **in the sheet but not in config** is ignored by design —
+- A member who exists **in the sheet but not in config** is ignored by design;
   config is the source of truth.
 
 ## 12. Known limitations
@@ -339,10 +339,10 @@ someone access.
 - **Rate limiting is in-process, not distributed.** Failures are counted in a
   module-level `Map`, keyed by IP + username: **5 failed logins** inside a
   15-minute window blocks that key for 15 minutes, and **10 failed
-  password-change attempts** blocks it for 5 minutes — both answered with `429`
+  password-change attempts** blocks it for 5 minutes. Both respond with `429`
   and a `Retry-After` header. Dependency-free by decision, which means the
   counters **reset on a cold start and are not shared between serverless
-  instances** — on Vercel, an attacker hitting several instances effectively gets
+  instances**. On Vercel, an attacker hitting several instances effectively gets
   a multiple of the budget. It raises the cost of online guessing by orders of
   magnitude but is not a substitute for a shared store. Moving to Upstash/Redis
   means replacing `RateLimiter` in `src/lib/rate-limit/`; nothing else changes.
@@ -351,22 +351,22 @@ someone access.
   app narrows the blast radius as far as it can: a save writes *only* the members
   whose toggles you actually changed, so two TEs editing different members never
   clobber each other, and every save response carries the domain's authoritative
-  state — read from the same grid the save planned against — so each browser
+  state (read from the same grid the save planned against), so each browser
   picks up the others' marks without an extra request. But if two people toggle
   the *same* member within the same second, the later write wins silently.
 - **The audit trail is append-only and optional.** Every save appends one row per
   mark to an `Audit Log` tab (timestamp, who marked it, member, state, date). If
-  that tab does not exist the save still succeeds and the UI says so — the log is
+  that tab does not exist the save still succeeds and the UI says so. The log is
   never allowed to cost you a mark. The `Attendance` tab itself stores current
   state, not history, so the log is the only record of who set what.
 - **Roster changes need a deploy** (see §11).
-- **Sheet-only members are ignored** — a row in the sheet with no matching config
+- **Sheet-only members are ignored**: a row in the sheet with no matching config
   entry never appears in the UI or analytics.
 - **Worksheets must exist.** The values API cannot create a tab, so a missing
   `Attendance` or `Passwords` tab is a configuration error, not something the app
   can repair (see §6).
 - **Google Sheets API quota** is 60 read and 60 write requests per minute per
-  *user* — and every request here comes from the one service account, so that is
+  *user*. Every request here comes from the one service account, so that is
   the binding limit rather than the 300/min project cap. A save costs **three**
   requests regardless of how many members changed: one `values.get`, one
   `values.batchUpdate`, one audit append. The browser coalesces a burst of taps
@@ -392,7 +392,7 @@ and the marks go to the sheet on their own. What changed is *when*.
   so locking a phone mid-roll-call cannot lose the last mark.
 - The response carries the domain's attendance as the server now sees it. The
   browser adopts that, which is how a second TE's concurrent marks appear without
-  polling — and how an optimistic guess gets corrected if it was wrong.
+  polling, and how an optimistic guess gets corrected if it was wrong.
 - If a save fails, the screen re-reads the sheet rather than guessing which marks
   landed, and says so.
 
@@ -422,13 +422,13 @@ src/
                               (+ CSS modules)
   config/
     domains.ts                the six markable domains (Core is not one)
-    members.ts                the roster — single source of truth
+    members.ts                the roster (single source of truth)
     auth.ts                   initial per-domain passwords
   lib/
     google-sheets/
       client.ts               the only module that touches the network
       errors.ts               error taxonomy (missing-tab · config · unavailable)
-      sheet-model.ts          pure sheet logic — parsing, write plans, analytics
+      sheet-model.ts          pure sheet logic: parsing, write plans, analytics
       attendance-service.ts   operations against an injectable SheetsClient
       index.ts                the named service layer used by routes
     auth/
@@ -436,7 +436,7 @@ src/
       credentials.ts          bcrypt verification, timing-safe fallback
       authorize.ts            the cross-domain rule, as a pure function
       scope.ts                which domain a session may act on
-    time/ist.ts               the attendance window — one definition, shared by
+    time/ist.ts               the attendance window: one definition, shared by
                               the route that enforces it and the UI that shows it
     validation/               request-payload validators
     rate-limit/               brute-force counter
@@ -456,7 +456,7 @@ credentials.
 | Endpoint | Success | Failure |
 |---|---|---|
 | `POST /api/auth/login` | `200 {success, username, domain}` + session cookie | `400` bad payload · `401` bad credentials · `429` rate-limited · `503` password store unreadable |
-| `POST /api/auth/logout` | `200` | — |
+| `POST /api/auth/logout` | `200` | None |
 | `POST /api/auth/change-password` | `200`, session cleared | `400` · `401` wrong current password · `429` · `503` |
 | `GET /api/attendance` | `200 {date, domain, records, overrideEndMs, serverTimeMs}` | `401` · `503` |
 | `POST /api/attendance` | `200 {success, date, domain, saved, records, …}` | `400` invalid payload · `401` · **`403`** member outside your domain, window closed, or a date that is not today · `503` |
@@ -464,18 +464,18 @@ credentials.
 
 How the two request-supplied fields are treated:
 
-- **`domain`** — a *request*, never a decision. `GET` reads it from the query
+- **`domain`** is a *request*, never a decision. `GET` reads it from the query
   string and `POST` from the body, and both hand it to `resolveDomain`: a TE
   always gets their own domain whatever they ask for, a Core Member gets the one
   they named if it is a real domain and `Curation` otherwise. `Core` is never a
   valid answer.
-- **`date`** — accepted on `GET` (`?date=DD/MM/YYYY`) so you can read back an
+- **`date`** is accepted on `GET` (`?date=DD/MM/YYYY`) so you can read back an
   earlier day. **Not accepted on `POST`:** the save date comes from the server
   clock, and a body naming any other date is a `403`. Honouring it would let a TE
   quietly backfill last week, which is the thing a fixed window exists to stop.
 
 Both `GET` and `POST` return `serverTimeMs`, which the browser uses to drive the
-countdown — so a device with a wrong clock cannot be shown a window the API will
+countdown so a device with a wrong clock cannot be shown a window the API will
 refuse to honour.
 
 ## Edge cases handled
@@ -486,7 +486,7 @@ The spec's §15 list, and where each is dealt with:
 |---|---|
 | Wrong domain selected for a TE | Domain comes from the roster, not the form; the selector only filters the name list. |
 | Wrong / empty password | `401` *"Invalid name or password."* / `400` *"Password is required."* |
-| Non-existent TE, or an SE name | `401`, same message — no account enumeration. |
+| Non-existent TE, or an SE name | `401` with the same message, preventing account enumeration. |
 | Unauthorized API request | `401` from both `proxy.ts` and the handler. |
 | **TE attempting another domain** | **`403`, nothing written** (`authorizeChanges`). |
 | Sheets API unavailable / offline | `503` with a retry message; the UI shows an error and a working **Retry**. |
@@ -497,10 +497,10 @@ The spec's §15 list, and where each is dealt with:
 | Member in config, not in sheet | Row appended on first save; shown as `Absent` before that. |
 | Member in sheet, not in config | Ignored (config is the source of truth). |
 | Invalid sheet format | Ragged rows, blank spacer columns, and duplicate date headers are all tolerated. |
-| Multiple TEs editing at once | Only toggled members are written, and every save response carries the domain's current state so each browser adopts the others' marks — no extra request, no polling. |
+| Multiple TEs editing at once | Only toggled members are written, and every save response carries the domain's current state so each browser adopts the others' marks without an extra request or polling. |
 | **Marking outside 3–4 PM IST** | **`403`**, decided on the server clock. Toggles are also disabled in the UI, but the UI is the courtesy, not the control. |
 | **A save naming any date but today** | **`403`.** The save date comes from the server; a TE cannot backfill. |
-| **A forged or unknown `domain`** | Resolved against the session — a TE gets their own, a Core Member gets a real domain or the default. Never `Core`. |
+| **A forged or unknown `domain`** | Resolved against the session: a TE gets their own, a Core Member gets a real domain or the default. Never `Core`. |
 | Core Member override running | TEs may save until it expires; it lives in the sheet, so every serverless instance and every device agrees on when it ends. |
 | `Audit Log` tab missing | The attendance write still succeeds; the UI reports that the save was not logged. |
 | Session expiry | Redirect to `/login` (or `401` for API); the stale cookie is cleared. |
@@ -518,15 +518,15 @@ npm test
 ```
 
 142 tests, no credentials and no network. Node's native TypeScript type-stripping
-runs the `.ts` files directly, so there is **no test dependency** — nothing was
+runs the `.ts` files directly, so there is **no test dependency**. Nothing was
 added to `package.json` for this.
 
 Coverage focuses on the guarantees that are expensive to get wrong:
 
-- **`sheet-model.test.ts`** — column-letter maths, date-column discovery, write
+- **`sheet-model.test.ts`**: column-letter maths, date-column discovery, write
   plans, and analytics against hand-built grids, including ragged rows and
   duplicate headers.
-- **`attendance-service.test.ts`** — a fake `SheetsClient` records every call, so
+- **`attendance-service.test.ts`**: a fake `SheetsClient` records every call, so
   the tests assert that a 10-member save issues **exactly one read and one
   `batchUpdate`** (**three** requests with the audit append, for any roster size),
   that untouched members appear in **no** write range, that today's column is
@@ -534,20 +534,20 @@ Coverage focuses on the guarantees that are expensive to get wrong:
   post-write roster without a second read, that a missing `Audit Log` tab does
   not cost the attendance write, and that an outage propagates instead of
   reporting a false success.
-- **`authorize.test.ts`** — the cross-domain rule: a foreign member name is
+- **`authorize.test.ts`**: the cross-domain rule: a foreign member name is
   rejected, one foreign name rejects the whole submission, and casing or padding
   cannot bypass it.
-- **`validation/index.test.ts`** — payload shapes, the `DD/MM/YYYY` calendar check
+- **`validation/index.test.ts`**: payload shapes, the `DD/MM/YYYY` calendar check
   (including leap years), and bcrypt's 72-byte ceiling.
-- **`rate-limit/index.test.ts`** — window and block behaviour against an injected
+- **`rate-limit/index.test.ts`**: window and block behaviour against an injected
   clock, key isolation, and the stale-entry sweep.
-- **`time/ist.test.ts`** — the attendance window: that it opens at exactly
+- **`time/ist.test.ts`**: the attendance window: that it opens at exactly
   15:00:00 IST and shuts at exactly 16:00:00, that the date rolls at IST midnight
   rather than UTC midnight, and that the countdown never goes negative at any
   minute of the day.
-- **`auth/scope.test.ts`** — which domain a session may act on: a TE is pinned to
+- **`auth/scope.test.ts`**: which domain a session may act on: a TE is pinned to
   their own whatever they ask for, a Core Member may pick any real domain, and
-  anything unknown — `Core` included — falls back rather than being trusted.
+  anything unknown, including `Core`, falls back rather than being trusted.
 
 ## Verifying the complete flow
 
@@ -558,9 +558,9 @@ credentials. With `npm run dev` running and `.env.local` filled in:
 ./scripts/verify-flow.sh
 ```
 
-The script drives the spec's minimum test cases over `curl` — including the two
-that matter most, *Curation TE → Marketing attendance → BLOCKED* and *6 rapid bad
-logins → 429* — and prints a pass/fail line per case.
+The script drives the spec's minimum test cases over `curl`, including the two
+that matter most: *Curation TE → Marketing attendance → BLOCKED* and *6 rapid bad
+logins → 429*. It prints a pass/fail line per case.
 
 Two things to know before running it, both consequences of closing the
 backdating hole:
@@ -568,11 +568,11 @@ backdating hole:
 - **Its writes land in today's real column.** The script can no longer aim at a
   throwaway `01/01/2000` date, because the server now picks the save date itself.
   Point `BASE_URL` at a server wired to a scratch spreadsheet.
-- **The write cases need the window open** — 3–4 PM IST, or a Core Member's
+- **The write cases need the window open**: 3–4 PM IST, or a Core Member's
   override. Outside that, every save is a correct `403` and those cases report
   failures. The unauthenticated, validation, and brute-force sections need
   neither a session nor the window, and are skipped (not failed) when login
-  doesn't succeed — which is what makes the script useful without credentials.
+  doesn't succeed, which is what makes the script useful without credentials.
 
 Member names and passwords default to `src/config/`; override any TE who has
 already changed their own with
@@ -592,7 +592,7 @@ Then check by hand, in a browser:
 | 375px viewport | Toggles stay tappable, nothing overflows. |
 
 Watch the dev-server log during a save: it prints one line reporting the number
-of Sheets calls the save actually made — **three** (read, write, audit append),
+of Sheets calls the save actually made: **three** (read, write, audit append),
 or two where the `Audit Log` tab is absent, whatever the member count. If that
 number grows with the roster, something has regressed.
 
